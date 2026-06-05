@@ -363,41 +363,36 @@
   <!-- ESCENA AR con AR.js usando marcador tipo HIRO por defecto -->
   <!-- Cambia 'hiro' por tu marcador personalizado si usas pattern file -->
   <a-scene embedded
-    arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3; facingMode: environment;"
+    arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3; facingMode: environment; videoTexture: false;"
     renderer="logarithmicDepthBuffer: true; antialias: false;" vr-mode-ui="enabled: false"
     style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;">
-    <a-marker preset="hiro">
-      <a-box position="0 0.5 0" material="color: #00cfff; opacity: 0.7;"></a-box>
-    </a-marker>
-    <a-entity camera></a-entity>
-  </a-scene>
 
-  <script>
-    // Pedir cámara
-    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-      .then(function (stream) {
-        document.getElementById('estado').textContent = 'Camara activa — apunta al marcador';
-        setTimeout(() => { document.getElementById('estado').style.display = 'none'; }, 3000);
-        stream.getTracks().forEach(t => t.stop());
-      })
-      .catch(function (err) {
-        document.getElementById('estado').textContent = 'Error: ' + err.message;
-      });
+    <script>
+      // Pedir cámara
+      navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+        .then(function (stream) {
+          document.getElementById('estado').textContent = 'Camara activa — apunta al marcador';
+          setTimeout(() => { document.getElementById('estado').style.display = 'none'; }, 3000);
+          stream.getTracks().forEach(t => t.stop());
+        })
+        .catch(function (err) {
+          document.getElementById('estado').textContent = 'Error: ' + err.message;
+        });
 
-    function abrirPanel(id) {
-      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-      if (id !== 'panel-video') pausarVideo();
-      document.getElementById(id).classList.add('active');
-    }
-    function cerrarPanel(id) {
-      document.getElementById(id).classList.remove('active');
-      if (id === 'panel-video') pausarVideo();
-    }
-    function pausarVideo() {
-      const v = document.getElementById('mi-video');
-      if (v) v.pause();
-    }
-  </script>
+      function abrirPanel(id) {
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        if (id !== 'panel-video') pausarVideo();
+        document.getElementById(id).classList.add('active');
+      }
+      function cerrarPanel(id) {
+        document.getElementById(id).classList.remove('active');
+        if (id === 'panel-video') pausarVideo();
+      }
+      function pausarVideo() {
+        const v = document.getElementById('mi-video');
+        if (v) v.pause();
+      }
+    </script>
 
 </body>
 
@@ -647,6 +642,12 @@
       z-index: 9998;
       pointer-events: none;
       font-family: 'Exo 2', sans-serif;
+    }
+
+    video {
+      object-fit: cover !important;
+      width: 100vw !important;
+      height: 100vh !important;
     }
   </style>
 </head>
