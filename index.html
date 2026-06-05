@@ -1,150 +1,49 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Tarjeta AR — Carlos Javier Gutiérrez Gutiérrez</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Exo+2:wght@300;400;600&display=swap"
-    rel="stylesheet" />
-  <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
-  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet" />
 
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Exo 2', sans-serif; background: #000; overflow: hidden; width: 100vw; height: 100vh; }
 
-    body {
-      font-family: 'Exo 2', sans-serif;
-      background: transparent;
-      overflow: hidden;
-    }
-
-    .panel {
-      display: none;
+    /* CAMARA DE FONDO */
+    #camara {
       position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: min(90vw, 400px);
-      background: linear-gradient(135deg, rgba(0, 8, 30, 0.97) 0%, rgba(0, 20, 50, 0.97) 100%);
-      border: 1px solid rgba(0, 180, 255, 0.4);
-      border-radius: 18px;
-      padding: 28px 24px 22px;
-      z-index: 9999;
-      color: #e0f4ff;
-      box-shadow: 0 0 40px rgba(0, 150, 255, 0.3);
-      animation: panelIn 0.25s ease;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      object-fit: cover;
+      z-index: 0;
     }
 
-    @keyframes panelIn {
-      from {
-        opacity: 0;
-        transform: translate(-50%, -48%) scale(0.96);
-      }
-
-      to {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(1);
-      }
-    }
-
-    .panel.active {
-      display: block;
-    }
-
-    .panel-title {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1rem;
-      color: #00cfff;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      margin-bottom: 18px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid rgba(0, 180, 255, 0.25);
-    }
-
-    .panel-row {
+    /* OVERLAY PRINCIPAL */
+    #overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      z-index: 10;
       display: flex;
-      gap: 10px;
-      margin-bottom: 11px;
-      align-items: flex-start;
-      font-size: 0.88rem;
-      line-height: 1.5;
-    }
-
-    .panel-row .label {
-      color: #00cfff;
-      font-weight: 600;
-      min-width: 100px;
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .panel-row .value {
-      color: #cde8f8;
-    }
-
-    .tag {
-      display: inline-block;
-      background: rgba(0, 180, 255, 0.15);
-      border: 1px solid rgba(0, 180, 255, 0.3);
-      border-radius: 20px;
-      padding: 2px 10px;
-      font-size: 0.75rem;
-      color: #7de4ff;
-      margin: 2px 2px 2px 0;
-    }
-
-    .btn-cerrar {
-      display: block;
-      width: 100%;
-      margin-top: 18px;
-      background: linear-gradient(90deg, #006fa8, #00b4d8);
-      color: white;
-      border: none;
-      padding: 10px;
-      border-radius: 10px;
-      font-family: 'Orbitron', sans-serif;
-      font-size: 0.75rem;
-      letter-spacing: 2px;
-      cursor: pointer;
-    }
-
-    #panel-video video {
-      width: 100%;
-      border-radius: 10px;
-      margin-top: 6px;
-      border: 1px solid rgba(0, 180, 255, 0.2);
-    }
-
-    #ui-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 100;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       pointer-events: none;
     }
 
+    /* TARJETA AR */
     .ar-card {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -60%);
-      width: min(85vw, 360px);
-      background: linear-gradient(135deg, rgba(0, 8, 30, 0.92) 0%, rgba(0, 20, 50, 0.92) 100%);
-      border: 1px solid rgba(0, 180, 255, 0.5);
-      border-radius: 18px;
-      padding: 20px;
+      width: min(88vw, 370px);
+      background: linear-gradient(135deg, rgba(0,8,30,0.88) 0%, rgba(0,20,50,0.88) 100%);
+      border: 1px solid rgba(0,180,255,0.5);
+      border-radius: 20px;
+      padding: 22px 20px 18px;
       color: white;
       pointer-events: all;
       text-align: center;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 0 30px rgba(0,150,255,0.25);
     }
 
     .ar-name {
@@ -152,52 +51,42 @@
       font-size: 1rem;
       color: white;
       margin-bottom: 4px;
+      line-height: 1.4;
     }
-
     .ar-role {
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       color: #00cfff;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       letter-spacing: 1px;
     }
-
     .ar-divider {
       border: none;
-      border-top: 1px solid rgba(0, 180, 255, 0.3);
-      margin: 12px 0;
+      border-top: 1px solid rgba(0,180,255,0.3);
+      margin: 10px 0;
     }
-
     .ar-buttons {
       display: flex;
       justify-content: space-around;
       margin-bottom: 12px;
     }
-
     .ar-btn {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       cursor: pointer;
       pointer-events: all;
-      padding: 8px 12px;
+      padding: 8px 10px;
       border-radius: 12px;
-      border: 1px solid rgba(0, 180, 255, 0.3);
-      background: rgba(0, 180, 255, 0.1);
+      border: 1px solid rgba(0,180,255,0.3);
+      background: rgba(0,180,255,0.1);
       color: #a0d8ef;
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       font-family: 'Exo 2', sans-serif;
-      min-width: 70px;
+      min-width: 68px;
     }
-
-    .ar-btn:active {
-      background: rgba(0, 180, 255, 0.3);
-    }
-
-    .ar-btn span.icon {
-      font-size: 1.4rem;
-    }
-
+    .ar-btn:active { background: rgba(0,180,255,0.3); }
+    .ar-btn .icon { font-size: 1.4rem; }
     .ar-play-btn {
       display: flex;
       align-items: center;
@@ -206,225 +95,277 @@
       width: 100%;
       padding: 10px;
       border-radius: 12px;
-      border: 1px solid rgba(0, 180, 255, 0.4);
-      background: rgba(0, 180, 255, 0.15);
+      border: 1px solid rgba(0,180,255,0.4);
+      background: rgba(0,180,255,0.15);
       color: #00cfff;
       font-family: 'Orbitron', sans-serif;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       letter-spacing: 1px;
       cursor: pointer;
       pointer-events: all;
     }
+    .ar-play-btn:active { background: rgba(0,180,255,0.35); }
 
-    .ar-play-btn:active {
-      background: rgba(0, 180, 255, 0.35);
-    }
-
-    #estado {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(0, 0, 0, 0.75);
-      color: #00cfff;
-      padding: 8px 18px;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      z-index: 9998;
+    /* OBJETO 3D CSS */
+    .scene3d {
+      width: 80px; height: 80px;
+      margin: 14px auto 0;
+      perspective: 300px;
       pointer-events: none;
-      font-family: 'Exo 2', sans-serif;
+    }
+    .cubo {
+      width: 60px; height: 60px;
+      position: relative;
+      transform-style: preserve-3d;
+      animation: girar 4s linear infinite;
+      margin: 10px auto;
+    }
+    @keyframes girar {
+      from { transform: rotateX(20deg) rotateY(0deg); }
+      to   { transform: rotateX(20deg) rotateY(360deg); }
+    }
+    .cara {
+      position: absolute;
+      width: 60px; height: 60px;
+      background: rgba(0,180,255,0.25);
+      border: 1px solid rgba(0,220,255,0.7);
+    }
+    .cara.front  { transform: translateZ(30px); }
+    .cara.back   { transform: rotateY(180deg) translateZ(30px); }
+    .cara.left   { transform: rotateY(-90deg) translateZ(30px); }
+    .cara.right  { transform: rotateY(90deg) translateZ(30px); }
+    .cara.top    { transform: rotateX(90deg) translateZ(30px); }
+    .cara.bottom { transform: rotateX(-90deg) translateZ(30px); }
+
+    .objeto-label {
+      font-size: 0.6rem;
+      color: rgba(0,200,255,0.6);
+      text-align: center;
+      letter-spacing: 1px;
+      margin-top: 2px;
+      pointer-events: none;
     }
 
-    video {
-      object-fit: cover !important;
-      width: 100vw !important;
-      height: 100vh !important;
+    /* PANELS */
+    .panel {
+      display: none;
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(90vw, 400px);
+      background: linear-gradient(135deg, rgba(0,8,30,0.97) 0%, rgba(0,20,50,0.97) 100%);
+      border: 1px solid rgba(0,180,255,0.4);
+      border-radius: 18px;
+      padding: 24px 20px 20px;
+      z-index: 9999;
+      color: #e0f4ff;
+      box-shadow: 0 0 40px rgba(0,150,255,0.3);
+      animation: panelIn 0.2s ease;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+    @keyframes panelIn {
+      from { opacity: 0; transform: translate(-50%, -48%) scale(0.96); }
+      to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    }
+    .panel.active { display: block; }
+    .panel-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.9rem; color: #00cfff;
+      letter-spacing: 2px; text-transform: uppercase;
+      margin-bottom: 16px; padding-bottom: 10px;
+      border-bottom: 1px solid rgba(0,180,255,0.25);
+    }
+    .panel-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: flex-start; font-size: 0.85rem; line-height: 1.5; }
+    .panel-row .label { color: #00cfff; font-weight: 600; min-width: 95px; font-size: 0.75rem; text-transform: uppercase; }
+    .panel-row .value { color: #cde8f8; }
+    .tag { display: inline-block; background: rgba(0,180,255,0.15); border: 1px solid rgba(0,180,255,0.3); border-radius: 20px; padding: 2px 9px; font-size: 0.72rem; color: #7de4ff; margin: 2px 2px 2px 0; }
+    .btn-cerrar { display: block; width: 100%; margin-top: 16px; background: linear-gradient(90deg, #006fa8, #00b4d8); color: white; border: none; padding: 10px; border-radius: 10px; font-family: 'Orbitron', sans-serif; font-size: 0.72rem; letter-spacing: 2px; cursor: pointer; }
+    #panel-video video { width: 100%; border-radius: 10px; margin-top: 6px; border: 1px solid rgba(0,180,255,0.2); }
+
+    /* ESTADO */
+    #estado {
+      position: fixed; bottom: 20px; left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.75); color: #00cfff;
+      padding: 8px 18px; border-radius: 20px;
+      font-size: 0.78rem; z-index: 9998;
+      pointer-events: none; font-family: 'Exo 2', sans-serif;
+      white-space: nowrap;
     }
 
-    canvas {
-      position: fixed !important;
-      top: 0 !important;
-      left: 0 !important;
-      width: 100vw !important;
-      height: 100vh !important;
-    }
-
-    a-scene {
-      position: fixed !important;
-      top: 0 !important;
-      left: 0 !important;
-      width: 100vw !important;
-      height: 100vh !important;
-    }
-
-    body {
-      background: transparent !important;
-    }
-
-    .a-canvas {
-      background: transparent !important;
-    }
-
-    video {
-      position: fixed !important;
-      top: 0 !important;
-      left: 0 !important;
-      width: 100vw !important;
-      height: 100vh !important;
-      object-fit: cover !important;
-      z-index: 0 !important;
+    /* MARCADOR hint */
+    #marcador-hint {
+      position: fixed; top: 16px; left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.6); color: rgba(255,255,255,0.7);
+      padding: 6px 14px; border-radius: 20px;
+      font-size: 0.72rem; z-index: 9998;
+      pointer-events: none; font-family: 'Exo 2', sans-serif;
+      border: 1px solid rgba(0,180,255,0.2);
     }
   </style>
 </head>
 
 <body>
 
-  <div id="estado">Iniciando camara...</div>
+  <!-- CAMARA -->
+  <video id="camara" autoplay playsinline muted></video>
 
-  <!-- TARJETA AR FLOTANTE -->
-  <div id="ui-overlay">
+  <!-- HINT -->
+  <div id="marcador-hint">📍 Apunta al marcador para activar la RA</div>
+
+  <!-- OVERLAY CON TARJETA -->
+  <div id="overlay">
     <div class="ar-card">
-      <div class="ar-name">Carlos Javier Gutierrez Gutierrez</div>
+
+      <div class="ar-name">Carlos Javier Gutiérrez Gutiérrez</div>
       <div class="ar-role">Desarrollador de Aplicaciones · DAM &amp; DAW</div>
+
       <hr class="ar-divider" />
+
       <div class="ar-buttons">
         <div class="ar-btn" onclick="window.location.href='mailto:carlosjavigutierrezgutierrez@gmail.com'">
           <span class="icon">✉️</span><span>Email</span>
         </div>
         <div class="ar-btn" onclick="abrirPanel('panel-academico')">
-          <span class="icon">📚</span><span>Academico</span>
+          <span class="icon">📚</span><span>Académico</span>
         </div>
         <div class="ar-btn" onclick="abrirPanel('panel-profesional')">
           <span class="icon">💼</span><span>Profesional</span>
         </div>
       </div>
+
       <hr class="ar-divider" />
+
       <div class="ar-play-btn" onclick="abrirPanel('panel-video')">
-        ▶ Ver presentacion personal
+        ▶&nbsp; Ver presentación personal
       </div>
+
+      <!-- OBJETO 3D CSS -->
+      <div class="scene3d">
+        <div class="cubo">
+          <div class="cara front"></div>
+          <div class="cara back"></div>
+          <div class="cara left"></div>
+          <div class="cara right"></div>
+          <div class="cara top"></div>
+          <div class="cara bottom"></div>
+        </div>
+      </div>
+      <div class="objeto-label">OBJETO 3D · TARJETA AR</div>
+
     </div>
   </div>
 
   <!-- PANEL ACADEMICO -->
   <div class="panel" id="panel-academico">
-    <div class="panel-title">📚 Datos Academicos</div>
-    <div class="panel-row"><span class="label">Ciclo 1</span><span class="value">T.S. Desarrollo de Aplicaciones
-        Multiplataforma (DAM)</span></div>
-    <div class="panel-row"><span class="label">Ciclo 2</span><span class="value">T.S. Desarrollo de Aplicaciones Web
-        (DAW)</span></div>
-    <div class="panel-row"><span class="label">Nivel</span><span class="value">Formacion Profesional de Grado
-        Superior</span></div>
+    <div class="panel-title">📚 Datos Académicos</div>
+    <div class="panel-row"><span class="label">Ciclo 1</span><span class="value">T.S. Desarrollo de Aplicaciones Multiplataforma (DAM)</span></div>
+    <div class="panel-row"><span class="label">Ciclo 2</span><span class="value">T.S. Desarrollo de Aplicaciones Web (DAW)</span></div>
+    <div class="panel-row"><span class="label">Nivel</span><span class="value">Formación Profesional de Grado Superior</span></div>
     <div class="panel-row">
-      <span class="label">Modulos</span>
+      <span class="label">Módulos</span>
       <span class="value">
-        <span class="tag">Programacion</span>
+        <span class="tag">Programación</span>
         <span class="tag">Bases de Datos</span>
         <span class="tag">Entornos de Desarrollo</span>
         <span class="tag">Interfaces</span>
         <span class="tag">Acceso a Datos</span>
         <span class="tag">Despliegue Web</span>
-        <span class="tag">Diseno de Interfaces Web</span>
+        <span class="tag">Diseño de Interfaces Web</span>
       </span>
     </div>
-    <div class="panel-row"><span class="label">Ano</span><span class="value">2024 - 2025</span></div>
-    <button class="btn-cerrar" onclick="cerrarPanel('panel-academico')">X CERRAR</button>
+    <div class="panel-row"><span class="label">Año</span><span class="value">2024 – 2025</span></div>
+    <button class="btn-cerrar" onclick="cerrarPanel('panel-academico')">✕ CERRAR</button>
   </div>
 
   <!-- PANEL PROFESIONAL -->
   <div class="panel" id="panel-profesional">
     <div class="panel-title">💼 Datos Profesionales</div>
-    <div class="panel-row"><span class="label">Perfil</span><span class="value">Desarrollador de Aplicaciones
-        Multiplataforma y Web</span></div>
+    <div class="panel-row"><span class="label">Perfil</span><span class="value">Desarrollador de Aplicaciones Multiplataforma y Web</span></div>
     <div class="panel-row">
       <span class="label">Lenguajes</span>
       <span class="value">
-        <span class="tag">Java</span>
-        <span class="tag">Kotlin</span>
-        <span class="tag">Python</span>
-        <span class="tag">JavaScript</span>
-        <span class="tag">PHP</span>
-        <span class="tag">SQL</span>
+        <span class="tag">Java</span><span class="tag">Kotlin</span><span class="tag">Python</span>
+        <span class="tag">JavaScript</span><span class="tag">PHP</span><span class="tag">SQL</span>
       </span>
     </div>
     <div class="panel-row">
-      <span class="label">Tecnologias</span>
+      <span class="label">Tecnologías</span>
       <span class="value">
-        <span class="tag">Android Studio</span>
-        <span class="tag">HTML/CSS</span>
-        <span class="tag">React</span>
-        <span class="tag">Node.js</span>
-        <span class="tag">MySQL</span>
-        <span class="tag">Git</span>
+        <span class="tag">Android Studio</span><span class="tag">HTML/CSS</span>
+        <span class="tag">React</span><span class="tag">Node.js</span>
+        <span class="tag">MySQL</span><span class="tag">Git</span>
       </span>
     </div>
-    <div class="panel-row"><span class="label">Habilidades</span><span class="value">Desarrollo de apps moviles, diseno
-        de interfaces, integracion de APIs REST, trabajo en equipo agil (Scrum)</span></div>
-    <div class="panel-row"><span class="label">Email</span><span
-        class="value">carlosjavigutierrezgutierrez@gmail.com</span></div>
-    <button class="btn-cerrar" onclick="cerrarPanel('panel-profesional')">X CERRAR</button>
+    <div class="panel-row"><span class="label">Habilidades</span><span class="value">Desarrollo de apps móviles, diseño de interfaces, integración de APIs REST, trabajo en equipo ágil (Scrum)</span></div>
+    <div class="panel-row"><span class="label">Email</span><span class="value">carlosjavigutierrezgutierrez@gmail.com</span></div>
+    <button class="btn-cerrar" onclick="cerrarPanel('panel-profesional')">✕ CERRAR</button>
   </div>
 
   <!-- PANEL VIDEO -->
   <div class="panel" id="panel-video">
-    <div class="panel-title">🎬 Presentacion Personal</div>
+    <div class="panel-title">🎬 Presentación Personal</div>
     <video id="mi-video" controls playsinline>
       <source src="video.mp4" type="video/mp4" />
     </video>
-    <button class="btn-cerrar" onclick="cerrarPanel('panel-video')">X CERRAR</button>
+    <button class="btn-cerrar" onclick="cerrarPanel('panel-video')">✕ CERRAR</button>
   </div>
 
-  <!-- ESCENA AR -->
-  <a-scene embedded
-    arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3; trackingMethod: best;"
-    renderer="logarithmicDepthBuffer: true; antialias: false; alpha: true;" vr-mode-ui="enabled: false"
-    style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:1;background:transparent;">
+  <div id="estado">Iniciando cámara...</div>
 
-    <script>
-      // Pedir camara y quitar zoom
-      navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment', zoom: 1 } })
-        .then(function (stream) {
-          document.getElementById('estado').textContent = 'Camara activa - apunta al marcador';
-          setTimeout(() => { document.getElementById('estado').style.display = 'none'; }, 3000);
-          const track = stream.getVideoTracks()[0];
-          if (track) {
-            const caps = track.getCapabilities();
-            if (caps.zoom) track.applyConstraints({ advanced: [{ zoom: caps.zoom.min }] });
-          }
-          stream.getTracks().forEach(t => t.stop());
-        })
-        .catch(function (err) {
-          document.getElementById('estado').textContent = 'Error: ' + err.message;
-        });
+  <script>
+    // ARRANCAR CAMARA TRASERA
+    navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { exact: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } }
+    })
+    .then(function(stream) {
+      const vid = document.getElementById('camara');
+      vid.srcObject = stream;
+      vid.play();
 
-      // Intentar quitar zoom cuando AR.js arranque la camara
-      setTimeout(() => {
-        const videos = document.querySelectorAll('video');
-        videos.forEach(v => {
-          if (v.srcObject) {
-            const track = v.srcObject.getVideoTracks()[0];
-            if (track) {
-              const caps = track.getCapabilities();
-              if (caps.zoom) track.applyConstraints({ advanced: [{ zoom: caps.zoom.min }] });
-            }
-          }
-        });
-      }, 3000);
+      // Quitar zoom si es posible
+      const track = stream.getVideoTracks()[0];
+      if (track) {
+        const caps = track.getCapabilities();
+        if (caps && caps.zoom) {
+          track.applyConstraints({ advanced: [{ zoom: caps.zoom.min }] });
+        }
+      }
 
-      function abrirPanel(id) {
-        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-        if (id !== 'panel-video') pausarVideo();
-        document.getElementById(id).classList.add('active');
-      }
-      function cerrarPanel(id) {
-        document.getElementById(id).classList.remove('active');
-        if (id === 'panel-video') pausarVideo();
-      }
-      function pausarVideo() {
-        const v = document.getElementById('mi-video');
-        if (v) v.pause();
-      }
-    </script>
+      document.getElementById('estado').textContent = '✓ Cámara activa — apunta al marcador';
+      setTimeout(() => { document.getElementById('estado').style.display = 'none'; }, 3000);
+    })
+    .catch(function(err) {
+      // Si falla exact, intentar sin exact
+      navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+      .then(function(stream) {
+        const vid = document.getElementById('camara');
+        vid.srcObject = stream;
+        vid.play();
+        document.getElementById('estado').textContent = '✓ Cámara activa';
+        setTimeout(() => { document.getElementById('estado').style.display = 'none'; }, 3000);
+      })
+      .catch(function(err2) {
+        document.getElementById('estado').textContent = 'Error cámara: ' + err2.message;
+      });
+    });
+
+    function abrirPanel(id) {
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      if (id !== 'panel-video') pausarVideo();
+      document.getElementById(id).classList.add('active');
+    }
+    function cerrarPanel(id) {
+      document.getElementById(id).classList.remove('active');
+      if (id === 'panel-video') pausarVideo();
+    }
+    function pausarVideo() {
+      const v = document.getElementById('mi-video');
+      if (v) v.pause();
+    }
+  </script>
 
 </body>
-
 </html>
