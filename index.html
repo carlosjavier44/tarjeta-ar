@@ -6,7 +6,7 @@
     <title>Tarjeta AR — Carlos Javier Gutiérrez Gutiérrez</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
 
     <style>
       * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -194,7 +194,7 @@
     <a-scene
       mindar-image="imageTargetSrc: targets.mind; autoStart: true;"
       color-space="sRGB"
-      renderer="colorManagement: true; physicallyCorrectLights: false; antialias: false;"
+      renderer="colorManagement: false; physicallyCorrectLights: false; antialias: false; logarithmicDepthBuffer: true;"
       vr-mode-ui="enabled: false"
       device-orientation-permission-ui="enabled: false"
     >
