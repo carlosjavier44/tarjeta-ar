@@ -801,6 +801,19 @@
       const v = document.getElementById('mi-video');
       if (v) v.pause();
     }
+    // Forzar zoom a 1 cuando la camara arranque
+    setTimeout(() => {
+      const video = document.querySelector('video');
+      if (video && video.srcObject) {
+        const track = video.srcObject.getVideoTracks()[0];
+        if (track) {
+          const capabilities = track.getCapabilities();
+          if (capabilities.zoom) {
+            track.applyConstraints({ advanced: [{ zoom: 1 }] });
+          }
+        }
+      }
+    }, 2000);
   </script>
 
 </body>
